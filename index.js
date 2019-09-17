@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 let persons = [
     {
@@ -21,6 +22,23 @@ let persons = [
 ]
 
 app.use(bodyParser.json())
+morgan.token('body', function (req, res) {
+    return JSON.stringify(req.body)
+})
+var loggerFormat = '":method :url" :status :response-time ms :body';
+
+app.use(morgan(loggerFormat, {
+    skip: function (res, req){
+        return res.statusCode < 400
+    },
+    stream: process.stderr
+}))
+app.use(morgan(loggerFormat, {
+    skip: function (res, req){
+        return res.statusCode >= 400
+    },
+    stream: process.stdout
+}))
 
 app.get('/api/persons/', (req, res) => {
     res.json(persons)
@@ -64,7 +82,7 @@ app.post('/api/persons/', (req, res) => {
         })
     }
     const names = persons.map(p => p.name)
-    if(names.includes(body.name)){
+    if(names.includes(body.name)){        
         return res.status(400).json({
             error: 'Names must be unique'
         })
