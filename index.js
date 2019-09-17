@@ -29,7 +29,7 @@ app.get('/api/persons/', (req, res) => {
 app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     const person = persons.find(p => p.id === id)
-    if(person){
+    if (person) {
         res.json(person)
     } else {
         res.status(404).end()
@@ -38,9 +38,9 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.get('/info/', (req, res) => {
     console.log(request.headers)
-    res.send("<div><p>Phonebook has info for " + persons.length + " people</p> <p> " + 
-    new Date + "</p></div>")
-    
+    res.send("<div><p>Phonebook has info for " + persons.length + " people</p> <p> " +
+        new Date + "</p></div>")
+
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -51,12 +51,22 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons/', (req, res) => {
     const body = req.body
-    console.log('body', body)
-    
     const id = Math.floor(Math.random() * 500)
-    if (!body.name){
+
+    if (!body.name) {
         return res.status(400).json({
-            error: 'content missing'
+            error: 'Name missing'
+        })
+    }
+    if(!body.number){
+        return res.status(400).json({
+            error: 'Number missing'
+        })
+    }
+    const names = persons.map(p => p.name)
+    if(names.includes(body.name)){
+        return res.status(400).json({
+            error: 'Names must be unique'
         })
     }
 
