@@ -1,2 +1,0 @@
-// http://localhost:3001/api/persons/ID
-GET http://localhost:3001/api/persons/4

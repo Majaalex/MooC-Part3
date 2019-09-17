@@ -1,5 +1,6 @@
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
 
 let persons = [
     {
@@ -19,6 +20,8 @@ let persons = [
     }
 ]
 
+app.use(bodyParser.json())
+
 app.get('/api/persons/', (req, res) => {
     res.json(persons)
 })
@@ -34,8 +37,10 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.get('/info/', (req, res) => {
+    console.log(request.headers)
     res.send("<div><p>Phonebook has info for " + persons.length + " people</p> <p> " + 
     new Date + "</p></div>")
+    
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -44,6 +49,25 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
+app.post('/api/persons/', (req, res) => {
+    const body = req.body
+    console.log('body', body)
+    
+    const id = Math.floor(Math.random() * 500)
+    if (!body.name){
+        return res.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: id
+    }
+    persons = persons.concat(person)
+    res.json(person)
+})
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
