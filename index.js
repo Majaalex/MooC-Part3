@@ -22,19 +22,20 @@ let persons = [
 ]
 
 app.use(bodyParser.json())
+// Morgan for logging
+// Creates a morgan token :body which logs the content in the body of a request
 morgan.token('body', function (req, res) {
     return JSON.stringify(req.body)
 })
 var loggerFormat = '":method :url" :status :response-time ms :body';
-
 app.use(morgan(loggerFormat, {
-    skip: function (res, req){
+    skip: function (res, req) {
         return res.statusCode < 400
     },
     stream: process.stderr
 }))
 app.use(morgan(loggerFormat, {
-    skip: function (res, req){
+    skip: function (res, req) {
         return res.statusCode >= 400
     },
     stream: process.stdout
@@ -76,13 +77,13 @@ app.post('/api/persons/', (req, res) => {
             error: 'Name missing'
         })
     }
-    if(!body.number){
+    if (!body.number) {
         return res.status(400).json({
             error: 'Number missing'
         })
     }
     const names = persons.map(p => p.name)
-    if(names.includes(body.name)){        
+    if (names.includes(body.name)) {
         return res.status(400).json({
             error: 'Names must be unique'
         })
