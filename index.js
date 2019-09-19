@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 let persons = [
     {
@@ -21,6 +22,7 @@ let persons = [
     }
 ]
 
+app.use(cors())
 app.use(bodyParser.json())
 // Morgan for logging
 // Creates a morgan token :body which logs the content in the body of a request
@@ -55,8 +57,7 @@ app.get('/api/persons/:id', (req, res) => {
     }
 })
 
-app.get('/info/', (req, res) => {
-    console.log(request.headers)
+app.get('/info', (req, res) => {
     res.send("<div><p>Phonebook has info for " + persons.length + " people</p> <p> " +
         new Date + "</p></div>")
 
