@@ -24,6 +24,7 @@ let persons = [
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(express.static('build'))
 // Morgan for logging
 // Creates a morgan token :body which logs the content in the body of a request
 morgan.token('body', function (req, res) {
