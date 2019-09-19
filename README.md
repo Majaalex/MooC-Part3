@@ -4,6 +4,7 @@
 npm install
 npm run watch
 ```
+https://salty-hollows-94670.herokuapp.com/api/persons
 
 ##Exercises
 ```
