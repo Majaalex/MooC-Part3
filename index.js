@@ -32,9 +32,10 @@ app.use(morgan(loggerFormat, {
 
 // Get all persons
 app.get('/api/persons/', (req, res) => {
-    Person.find({}).then(persons => {
-        res.json(persons.map(p => p.toJSON()))
-    })
+    Person.find({})
+        .then(persons => {
+            res.json(persons.map(p => p.toJSON()))
+        })
 })
 
 // Get info on a specific person
@@ -42,12 +43,8 @@ app.get('/api/persons/:id', (req, res) => {
     const id = req.params.id
     Person
         .findById(id)
-        .then(person => {
-            res.json(person)
-        })
-        .catch((error) => {
-            res.status(500).end()
-        })
+        .then(person => res.json(person))
+        .catch((error) => res.status(500).end())
 })
 
 // Get info on how large the phonebook is
@@ -63,9 +60,7 @@ app.delete('/api/persons/:id', (req, res) => {
     Person
         .deleteOne({ _id: id })
         .then(res.status(204).end())
-        .catch((error) => {
-            res.status(500).end()
-        })
+        .catch((error) => res.status(500).end())
 })
 
 // Create a new person
@@ -88,13 +83,14 @@ app.post('/api/persons/', (req, res) => {
         number: body.number
     })
 
-    person.save().then(p => {
-        res.json(person)
-    })
+    person
+        .save()
+        .then(p => res.json(person))
+        .catch(error => res.status(500).end())
 })
 
 // Update a person
-app.post('/api/persons/:id', (req, res) => {
+app.put('/api/persons/:id', (req, res) => {
     const id = req.params.id
     const body = req.body
 
@@ -104,14 +100,14 @@ app.post('/api/persons/:id', (req, res) => {
         })
     }
 
-    Person.findOneAndUpdate({ _id: id },
-        { $set: { number: body.number } }
-        , (error, doc) => {error ? console.log('Update error') : console.log('Update success')}
-    )
-    .then(res.status(204).end())
-    .catch((error) => {
-        res.status(500).end()
-    })
+    Person
+        .findOneAndUpdate(
+            { _id: id },
+            { $set: { number: body.number } },
+            (error, doc) => { error ? console.log('Update error') : console.log('Update success') }
+        )
+        .then(res.status(204).end())
+        .catch((error) => res.status(500).end())
 
 
 })

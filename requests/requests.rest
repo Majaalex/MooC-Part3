@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3001/api/persons/5d84fe3bfe97bc
+PUT http://localhost:3001/api/persons/5d84fe3bfe97bc
 Content-Type: application/json
 
 {
