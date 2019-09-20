@@ -1,8 +1,30 @@
+// GET START
 GET http://localhost:3001/api/persons
 
 ###
 GET http://localhost:3001/info
 
 ###
-// http://localhost:3001/api/persons/ID
-GET http://localhost:3001/api/persons/3
+// http://localhost:3001/api/persons/id
+GET http://localhost:3001/api/persons/5d84fa816c89c910a4f8fc40
+
+
+// GET END
+//=================//
+// POST START
+###
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name": "kalleaerfesr",
+    "number": "500000"
+}
+
+// POST END
+//=================//
+// DELETE START
+###
+DELETE http://localhost:3001/api/persons/5d84fe44fe97bc0560661d21
+
+// DELETE END
