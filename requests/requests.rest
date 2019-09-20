@@ -21,6 +21,14 @@ Content-Type: application/json
     "number": "500000"
 }
 
+###
+POST http://localhost:3001/api/persons/5d84fe3bfe97bc
+Content-Type: application/json
+
+{
+    "name": "kalle",
+    "number": "50000032131"
+}
 // POST END
 //=================//
 // DELETE START
@@ -28,3 +36,4 @@ Content-Type: application/json
 DELETE http://localhost:3001/api/persons/5d84fe44fe97bc0560661d21
 
 // DELETE END
+//=================//
