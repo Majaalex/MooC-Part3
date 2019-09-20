@@ -10,7 +10,6 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.static('build'))
 
-
 // Morgan for logging
 // Creates a morgan token :body which logs the content in the body of a request
 morgan.token('body', function (req, res) {
@@ -39,44 +38,38 @@ app.get('/api/persons/', (req, res) => {
 })
 
 // Get info on a specific person
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     Person
         .findById(id)
         .then(person => res.json(person))
-        .catch((error) => res.status(500).end())
+        .catch(error => next(error))
 })
 
 // Get info on how large the phonebook is
 app.get('/info', (req, res) => {
-    Person.find({}).then(persons => {
+    Person.find({})
+    .then(persons => {
         res.send(`Phonebook has info for ${persons.length} people ${new Date}`)
     })
+    .catch(error => next(error))
+    
 })
 
 // Delete a specific person
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     Person
         .deleteOne({ _id: id })
         .then(res.status(204).end())
-        .catch((error) => res.status(500).end())
+        .catch(error => next(error))
 })
 
 // Create a new person
-app.post('/api/persons/', (req, res) => {
+app.post('/api/persons/', (req, res, next) => {
     const body = req.body
 
-    if (!body.name) {
-        return res.status(400).json({
-            error: 'Name missing'
-        })
-    }
-    if (!body.number) {
-        return res.status(400).json({
-            error: 'Number missing'
-        })
-    }
+    if (!body.name ||!body.number) return next(error)
 
     const person = new Person({
         name: body.name,
@@ -86,18 +79,16 @@ app.post('/api/persons/', (req, res) => {
     person
         .save()
         .then(p => res.json(person))
-        .catch(error => res.status(500).end())
+        .catch(error => next(error))
 })
 
 // Update a person
-app.put('/api/persons/:id', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     const body = req.body
 
     if (!body.number) {
-        return res.status(400).json({
-            error: 'Number missing'
-        })
+        return next(error)
     }
 
     Person
@@ -107,10 +98,30 @@ app.put('/api/persons/:id', (req, res) => {
             (error, doc) => { error ? console.log('Update error') : console.log('Update success') }
         )
         .then(res.status(204).end())
-        .catch((error) => res.status(500).end())
+        .catch(error => next(error))
 
 
 })
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({error : 'Unknown endpoint'})
+}
+app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+    console.log('Error', error.message)
+    console.log('Errorname', error.name, error.kind)
+    
+    if(error.name === 'TypeError'){
+        return res.status(500).send({error: `Issue with the server`})
+    }
+    if(error.name === 'CastError' && error.kind === 'ObjectId'){
+        console.log('CastError')
+        return res.status(400).send({error: 'Incorrect Id'})
+    } else {
+        return res.status(400).send({error: 'Bad request'})
+    }
+}
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
