@@ -17,17 +17,17 @@ POST http://localhost:3001/api/persons/
 Content-Type: application/json
 
 {
-    "name": "kalleaerfesr",
-    "number": "500000"
+    "name": "kalle",
+    "number": "50124314"
 }
 
 ###
-PUT http://localhost:3001/api/persons/5d852f2dfe97bc0560661d22
+PUT http://localhost:3001/api/persons/5d86393fc09c3c486c013257
 Content-Type: application/json
 
 {
     "name": "kalle",
-    "number": "500000321313123123"
+    "number": "51"
 }
 // POST END
 //=================//
